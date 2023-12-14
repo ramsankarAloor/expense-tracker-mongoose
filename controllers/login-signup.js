@@ -1,7 +1,6 @@
-const Users = require("../models/users");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
 exports.postSignUp = async (req, res) => {
   try {
@@ -11,15 +10,15 @@ exports.postSignUp = async (req, res) => {
         .status(400)
         .json({ err: "Bad parameters. Something is missing." });
     }
-    const existing = await Users.findOne({
-      where: { email: email },
-    });
+    const existing = await User.findOne({ email });
     if (existing) {
       return res.status(403).json({ err: "email not unique" });
     }
 
     const hash = await bcrypt.hash(password, 10);
-    const newEntry = await Users.create({ name, email, password: hash });
+    const user = new User({ name, email, password: hash });
+    const newEntry = await user.save();
+
     res.status(201).json(newEntry);
   } catch (err) {
     res.status(500).json({
@@ -36,13 +35,11 @@ exports.postLogIn = async (req, res) => {
       .json({ err: "Bad parameters. Something is missing." });
   }
 
-  const existing = await Users.findOne({
-    where: { email: email },
-  });
+  const existing = await User.findOne({ email});
   if (!existing) {
     return res.status(404).json({ err: "User not found" });
   } else {
-    const savedPassword = existing.dataValues.password;
+    const savedPassword = existing.password;
     //savedPassword is the hash
     const isMatch = await bcrypt.compare(password, savedPassword);
     if (!isMatch) {
@@ -50,7 +47,7 @@ exports.postLogIn = async (req, res) => {
     }
   }
   res.json({
-    accessToken: generateAccessToken(existing.dataValues.id),
+    accessToken: generateAccessToken(existing._id),
     message: "User logged successfully",
   });
 };

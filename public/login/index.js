@@ -1,4 +1,4 @@
-const apiBaseUrl = `http://13.48.1.93`;
+const apiBaseUrl = BASE_URL;
 
 let form = document.getElementById("login-form");
 form.addEventListener("submit", postLogin);
@@ -23,7 +23,7 @@ async function postLogin(event) {
   };
 
   try {
-    const { data } = await axios.post(`${apiBaseUrl}:3000/login`, obj);
+    const { data } = await axios.post(`${apiBaseUrl}/login`, obj);
     //setting date at login
     const today = new Date();
     const year = today.getFullYear();
@@ -33,7 +33,7 @@ async function postLogin(event) {
     localStorage.setItem("lastEnteredDate", formattedDate);
 
     localStorage.setItem("token", data.accessToken);
-    window.location.href = "../expense/expense.html";
+    window.location.href = "../expense/index.html";
   } catch (error) {
     if (error.response.status === 404) {
       loginError.textContent = "Error ! User not found..";

@@ -1,4 +1,4 @@
-const apiBaseUrl = `http://13.48.1.93`;
+const apiBaseUrl = BASE_URL;
 
 let form = document.getElementById("signup-form");
 
@@ -17,22 +17,23 @@ async function postSignup(event) {
     email: email,
     password: password,
   };
-  try {
-    await axios.post(`${apiBaseUrl}:3000/signup`, obj);
-    const { data: loginUser } = await axios.post(`${apiBaseUrl}:3000/login`, {
-      email: email,
-      password: password,
-    });
-    //setting date at login
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
-    const day = String(today.getDate()).padStart(2, "0"); // Add leading zero if needed
-    const formattedDate = `${year}-${month}-${day}`;
-    localStorage.setItem("lastEnteredDate", formattedDate);
 
-    localStorage.setItem("token", loginUser.accessToken);
-    window.location.href = "../expense/expense.html";
+  try {
+  await axios.post(`${apiBaseUrl}/signup`, obj);
+  const { data: loginUser } = await axios.post(`${apiBaseUrl}/login`, {
+    email: email,
+    password: password,
+  });
+  //setting date at login
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
+  const day = String(today.getDate()).padStart(2, "0"); // Add leading zero if needed
+  const formattedDate = `${year}-${month}-${day}`;
+  localStorage.setItem("lastEnteredDate", formattedDate);
+
+  localStorage.setItem("token", loginUser.accessToken);
+  window.location.href = "../expense/index.html";
   } catch (error) {
     if (error.response.status === 403) {
       emailError.textContent = "*This email is already registered";

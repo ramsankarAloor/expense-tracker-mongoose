@@ -1,6 +1,6 @@
 const Expenses = require("../models/expenses");
 const sequelize = require("../util/database");
-const Users = require("../models/users");
+const Users = require("../models/user");
 
 exports.isUserPremium = async (req, res) => {
   const user = await Users.findOne({ where: { id: req.user.id } });
