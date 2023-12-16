@@ -1,37 +1,45 @@
 const apiBaseUrl = BASE_URL;
 
-document.addEventListener('DOMContentLoaded', function() {
-  if(!localStorage.getItem('lastEnteredDate')){
+document.addEventListener("DOMContentLoaded", function () {
+  if (!localStorage.getItem("lastEnteredDate")) {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
-    const day = String(today.getDate()).padStart(2, '0'); // Add leading zero if needed
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
+    const day = String(today.getDate()).padStart(2, "0"); // Add leading zero if needed
     const formattedDate = `${year}-${month}-${day}`;
-    document.getElementById('date-pick').value = formattedDate;
-  }else{
-    document.getElementById('date-pick').value = localStorage.getItem('lastEnteredDate');
+    document.getElementById("date-pick").value = formattedDate;
+  } else {
+    document.getElementById("date-pick").value =
+      localStorage.getItem("lastEnteredDate");
   }
 
   // setupForPremium();
-  getIncomesPerDate(document.getElementById('date-pick').value);
-  getExpensesPerDate(document.getElementById('date-pick').value);
+  getIncomesPerDate(document.getElementById("date-pick").value);
+  getExpensesPerDate(document.getElementById("date-pick").value);
 });
 
-function onSetDate(){
-  console.log(document.getElementById('date-pick').value);
-  localStorage.setItem('lastEnteredDate', document.getElementById('date-pick').value);
+function onSetDate() {
+  console.log(document.getElementById("date-pick").value);
+  localStorage.setItem(
+    "lastEnteredDate",
+    document.getElementById("date-pick").value
+  );
   window.location.reload();
 }
 
-async function getIncomesPerDate(date){
-  const token = localStorage.getItem('token');
-  const {data:incomes} = await axios.post(`${apiBaseUrl}/expenses`,{date:date, isIncome : true}, {
-    headers : {
-      'Authorization' : `Bearer ${token}`
+async function getIncomesPerDate(date) {
+  const token = localStorage.getItem("token");
+  const { data: incomes } = await axios.post(
+    `${apiBaseUrl}/expenses`,
+    { date: date, isIncome: true },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  });
+  );
   //displaying expenses list
-  let totalIn = 0
+  let totalIn = 0;
   incomes.forEach((income) => {
     displayIncomeRecord(income);
     totalIn += income.amount;
@@ -43,15 +51,19 @@ async function getIncomesPerDate(date){
   totalNode.appendChild(textTotal);
 }
 
-async function getExpensesPerDate(date){
-  const token = localStorage.getItem('token');
-  const {data:expenses} = await axios.post(`${apiBaseUrl}/expenses`,{date:date, isIncome:false}, {
-    headers : {
-      'Authorization' : `Bearer ${token}`
+async function getExpensesPerDate(date) {
+  const token = localStorage.getItem("token");
+  const { data: expenses } = await axios.post(
+    `${apiBaseUrl}/expenses`,
+    { date: date, isIncome: false },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  });
+  );
   //displaying expenses list
-  let totalEx = 0
+  let totalEx = 0;
   expenses.forEach((expense) => {
     displayExpenseRecord(expense);
     totalEx += expense.amount;
@@ -63,40 +75,40 @@ async function getExpensesPerDate(date){
   totalNode.appendChild(textTotal);
 }
 
-async function setupForPremium(){
-  const token = localStorage.getItem('token');
-  const {data:isUserPremium} = await axios.get(`${apiBaseUrl}/isPremium`, {
-    headers : {
-      'Authorization' : `Bearer ${token}`
-    }
+async function setupForPremium() {
+  const token = localStorage.getItem("token");
+  const { data: isUserPremium } = await axios.get(`${apiBaseUrl}/isPremium`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
-  const premiumDiv = document.getElementById('premium-div');
-  const youArePremium = document.getElementById('you-are-premium');
-  if(isUserPremium){
-    premiumDiv.style.display = 'none';
-    youArePremium.style.display = 'flex';
+  const premiumDiv = document.getElementById("premium-div");
+  const youArePremium = document.getElementById("you-are-premium");
+  if (isUserPremium) {
+    premiumDiv.style.display = "none";
+    youArePremium.style.display = "flex";
   }
 }
 
-function displayIncomeRecord(object){
+function displayIncomeRecord(object) {
   const expensesList = document.getElementById("incomes-list");
-  const listElement = document.createElement('div');
-  listElement.className = 'list-element';
+  const listElement = document.createElement("div");
+  listElement.className = "list-element";
 
-  const amountDiv = document.createElement('div');
-  const descriptionDiv = document.createElement('div');
-  const categoryDiv = document.createElement('div');
-  const deleteBtnDiv = document.createElement('div');
-  const deleteBtn = document.createElement('button');
+  const amountDiv = document.createElement("div");
+  const descriptionDiv = document.createElement("div");
+  const categoryDiv = document.createElement("div");
+  const deleteBtnDiv = document.createElement("div");
+  const deleteBtn = document.createElement("button");
   amountDiv.textContent = object.amount;
   descriptionDiv.textContent = object.description;
   categoryDiv.textContent = object.category;
   deleteBtn.textContent = "Delete";
-  amountDiv.className = 'list-element-sub-20';
-  descriptionDiv.className = 'list-element-sub-30';
-  categoryDiv.className = 'list-element-sub-30';
-  deleteBtnDiv.className = 'list-element-sub-20';
-  deleteBtn.className = 'delete-btn';
+  amountDiv.className = "list-element-sub-20";
+  descriptionDiv.className = "list-element-sub-30";
+  categoryDiv.className = "list-element-sub-30";
+  deleteBtnDiv.className = "list-element-sub-20";
+  deleteBtn.className = "delete-btn";
   expensesList.appendChild(listElement);
   listElement.appendChild(descriptionDiv);
   listElement.appendChild(categoryDiv);
@@ -106,11 +118,11 @@ function displayIncomeRecord(object){
   deleteBtn.addEventListener("click", deleteIncome);
 
   async function deleteIncome() {
-    const token = localStorage.getItem('token');
-    await axios.delete(`${apiBaseUrl}/incomes/${object.id}`, {
-      headers : {
-        'Authorization' : `Bearer ${token}`
-      }
+    const token = localStorage.getItem("token");
+    await axios.delete(`${apiBaseUrl}/incomes/${object._id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     window.location.reload();
   }
@@ -118,23 +130,23 @@ function displayIncomeRecord(object){
 
 function displayExpenseRecord(object) {
   const expensesList = document.getElementById("expenses-list");
-  const listElement = document.createElement('div');
-  listElement.className = 'list-element';
+  const listElement = document.createElement("div");
+  listElement.className = "list-element";
 
-  const amountDiv = document.createElement('div');
-  const descriptionDiv = document.createElement('div');
-  const categoryDiv = document.createElement('div');
-  const deleteBtnDiv = document.createElement('div');
-  const deleteBtn = document.createElement('button');
+  const amountDiv = document.createElement("div");
+  const descriptionDiv = document.createElement("div");
+  const categoryDiv = document.createElement("div");
+  const deleteBtnDiv = document.createElement("div");
+  const deleteBtn = document.createElement("button");
   amountDiv.textContent = object.amount;
   descriptionDiv.textContent = object.description;
   categoryDiv.textContent = object.category;
   deleteBtn.textContent = "Delete";
-  amountDiv.className = 'list-element-sub-20';
-  descriptionDiv.className = 'list-element-sub-30';
-  categoryDiv.className = 'list-element-sub-30';
-  deleteBtnDiv.className = 'list-element-sub-20';
-  deleteBtn.className = 'delete-btn';
+  amountDiv.className = "list-element-sub-20";
+  descriptionDiv.className = "list-element-sub-30";
+  categoryDiv.className = "list-element-sub-30";
+  deleteBtnDiv.className = "list-element-sub-20";
+  deleteBtn.className = "delete-btn";
   expensesList.appendChild(listElement);
   listElement.appendChild(descriptionDiv);
   listElement.appendChild(categoryDiv);
@@ -144,120 +156,123 @@ function displayExpenseRecord(object) {
   deleteBtn.addEventListener("click", deleteExpense);
 
   async function deleteExpense() {
-    const token = localStorage.getItem('token');
-    await axios.delete(`${apiBaseUrl}/expenses/${object.id}`, {
-      headers : {
-        'Authorization' : `Bearer ${token}`
-      }
+    const token = localStorage.getItem("token");
+    await axios.delete(`${apiBaseUrl}/expenses/${object._id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     window.location.reload();
   }
 }
 
 async function postNewExpense() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   let amount = document.getElementById("amount").value;
   let description = document.getElementById("description").value;
   let category = document.getElementById("dropdown").value;
   let date = document.getElementById("date-pick").value;
 
-  const obj = { amount, description, category, date, isIncome : false};
+  const obj = { amount, description, category, date, isIncome: false };
 
-  const newExpense = await axios.post(
-    `${apiBaseUrl}/new-expense`, obj, {
-      headers : {
-        'Authorization' : `Bearer ${token}`
-      }
-    }
-  );
+  const newExpense = await axios.post(`${apiBaseUrl}/new-expense`, obj, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   console.log(newExpense);
-  localStorage.setItem('lastEnteredDate', date);
+  localStorage.setItem("lastEnteredDate", date);
   window.location.reload();
 }
 
-async function postNewIncome(){
-  const token = localStorage.getItem('token');
+async function postNewIncome() {
+  const token = localStorage.getItem("token");
   let amount = document.getElementById("income-amount").value;
   let description = document.getElementById("income-description").value;
   let category = document.getElementById("income-dropdown").value;
   let date = document.getElementById("date-pick").value;
 
-  const obj = { amount, description, category, date, isIncome: true};
+  const obj = { amount, description, category, date, isIncome: true };
 
-  await axios.post(
-    `${apiBaseUrl}/new-expense`, obj, {
-      headers : {
-        'Authorization' : `Bearer ${token}`
-      }
-    }
-  );
+  await axios.post(`${apiBaseUrl}/new-expense`, obj, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   window.location.reload();
 }
 
 document.getElementById("rzp-button1").onclick = async function (event) {
-   const token = localStorage.getItem('token');
-   const response = await axios.get(`${apiBaseUrl}/purchase/premium-membership`, {
-    headers : {
-      "Authorization" : `Bearer ${token}`
+  const token = localStorage.getItem("token");
+  const response = await axios.get(
+    `${apiBaseUrl}/purchase/premium-membership`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-   })
-   let options = {
-    "key" : response.data.key_id,
-    "order_id" : response.data.order.id,
+  );
+  let options = {
+    key: response.data.key_id,
+    order_id: response.data.order.id,
     //handler function is called when payment is successful
-    "handler" : async function (response) {
-      await axios.post(`${apiBaseUrl}/purchase/update-transaction-status`, {
-        order_id : options.order_id,
-        payment_id : response.razorpay_payment_id
-      }, {
-        headers : {
-          'Authorization' : `Bearer ${token}`
+    handler: async function (response) {
+      await axios.post(
+        `${apiBaseUrl}/purchase/update-transaction-status`,
+        {
+          order_id: options.order_id,
+          payment_id: response.razorpay_payment_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       alert("You are a premium user now!!");
-    }
-   };
-   const rzp1 = new Razorpay(options);
-   rzp1.open();
-   event.preventDefault();
+    },
+  };
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+  event.preventDefault();
 
-   rzp1.on('Payment failed', (response)=>{
+  rzp1.on("Payment failed", (response) => {
     console.log(response);
     alert("Something went wrong");
-   })
+  });
+};
+
+const showLeaderBoardButton = document.getElementById("show-leaderboard-btn");
+showLeaderBoardButton.addEventListener("click", goToLeaderBoard);
+const showReportButton = document.getElementById("show-report-btn");
+showReportButton.addEventListener("click", goToReport);
+
+function goToLeaderBoard() {
+  window.location.href = "../leaderboard/leaderboard.html";
+}
+function goToReport() {
+  window.location.href = "../reportGeneration/report.html";
 }
 
-const showLeaderBoardButton = document.getElementById('show-leaderboard-btn');
-showLeaderBoardButton.addEventListener('click', goToLeaderBoard);
-const showReportButton = document.getElementById('show-report-btn');
-showReportButton.addEventListener('click', goToReport);
+function switchToIncome() {
+  const switchIncome = document.getElementById("switch-to-income");
+  const switchExpense = document.getElementById("switch-to-expense");
+  const expenseExclusive = document.getElementById("expense-exclusive");
+  const incomeExclusive = document.getElementById("income-exclusive");
 
-function goToLeaderBoard(){
-  window.location.href = "../leaderboard/leaderboard.html"
+  switchIncome.style.display = "none";
+  switchExpense.style.display = "flex";
+  expenseExclusive.style.display = "none";
+  incomeExclusive.style.display = "block";
 }
-function goToReport(){
-  window.location.href = "../reportGeneration/report.html"
-}
+function switchToExpense() {
+  const switchIncome = document.getElementById("switch-to-income");
+  const switchExpense = document.getElementById("switch-to-expense");
+  const expenseExclusive = document.getElementById("expense-exclusive");
+  const incomeExclusive = document.getElementById("income-exclusive");
 
-function switchToIncome(){
-  const switchIncome = document.getElementById('switch-to-income');
-  const switchExpense = document.getElementById('switch-to-expense');
-  const expenseExclusive = document.getElementById('expense-exclusive');
-  const incomeExclusive = document.getElementById('income-exclusive');
-
-  switchIncome.style.display = 'none';
-  switchExpense.style.display = 'flex';
-  expenseExclusive.style.display = 'none';
-  incomeExclusive.style.display = 'block';
-}
-function switchToExpense(){
-  const switchIncome = document.getElementById('switch-to-income');
-  const switchExpense = document.getElementById('switch-to-expense');
-  const expenseExclusive = document.getElementById('expense-exclusive');
-  const incomeExclusive = document.getElementById('income-exclusive');
-
-  switchIncome.style.display = 'flex';
-  switchExpense.style.display = 'none';
-  expenseExclusive.style.display = 'block';
-  incomeExclusive.style.display = 'none';
+  switchIncome.style.display = "flex";
+  switchExpense.style.display = "none";
+  expenseExclusive.style.display = "block";
+  incomeExclusive.style.display = "none";
 }

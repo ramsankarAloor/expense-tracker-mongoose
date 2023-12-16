@@ -11,8 +11,8 @@ router.post('/expenses', authMiddleware.authenticate, expenseController.getExpen
 
 router.post('/new-expense', authMiddleware.authenticate, expenseController.postNewExpense);
 
-// router.delete('/expenses/:id', authMiddleware.authenticate, expenseController.deleteExpense);
+router.delete('/expenses/:id', authMiddleware.authenticate, expenseController.deleteExpense);
 
-// router.delete('/incomes/:id', authMiddleware.authenticate, expenseController.deleteIncome);
+router.delete('/incomes/:id', authMiddleware.authenticate, expenseController.deleteIncome);
 
 module.exports = router;

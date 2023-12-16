@@ -29,12 +29,12 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.methods.addToTotalExpense = function(totalExpense){
+userSchema.methods.editTotalExpense = function(totalExpense){
   this.totalExpense = totalExpense
   return this.save();
 }
 
-userSchema.methods.addToTotalIncome = function(totalIncome){
+userSchema.methods.editTotalIncome = function(totalIncome){
   this.totalIncome = totalIncome
   return this.save();
 }

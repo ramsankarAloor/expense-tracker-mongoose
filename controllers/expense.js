@@ -27,7 +27,6 @@ exports.getExpenses = async (req, res) => {
 };
 
 exports.postNewExpense = async (req, res) => {
-  console.log("req user => ", req.user);
   try {
     if (!req.body.amount) {
       throw new Error("Amount field is mandatory..!");
@@ -49,10 +48,10 @@ exports.postNewExpense = async (req, res) => {
 
     if (isIncome === false) {
       const totalExpense = Number(req.user.totalExpense) + Number(amount);
-      req.user.addToTotalExpense(totalExpense);
+      req.user.editTotalExpense(totalExpense);
     } else {
       const totalIncome = Number(req.user.totalIncome) + Number(amount);
-      req.user.addToTotalIncome(totalIncome);
+      req.user.editTotalIncome(totalIncome);
     }
 
     const newEntry = await expense.save();
@@ -66,71 +65,33 @@ exports.postNewExpense = async (req, res) => {
 };
 
 exports.deleteExpense = async (req, res) => {
-  const t = await sequelize.transaction();
   try {
     const expenseId = req.params.id;
-    const { amount } = await Expenses.findOne({ where: { id: expenseId } });
-
-    const result = await Expenses.destroy(
-      {
-        where: { id: expenseId, userId: req.user.id },
-      },
-      { transaction: t }
-    );
+    const result = await Expense.findOneAndDelete({ _id: expenseId });
+    const amount = result.amount
 
     const totalExpense = Number(req.user.totalExpense) - Number(amount);
-
-    Users.update(
-      {
-        totalExpense: totalExpense,
-      },
-      {
-        where: { id: req.user.id },
-      },
-      {
-        transaction: t,
-      }
-    );
-    await t.commit();
+    req.user.editTotalExpense(totalExpense);
+  
     res.json(result);
   } catch (error) {
-    await t.rollback();
     console.error(error);
     res.status(500).json({ error: "Error in delete expense " });
   }
 };
 
 exports.deleteIncome = async (req, res) => {
-  const t = await sequelize.transaction();
   try {
     const incomeId = req.params.id;
-    const { amount } = await Expenses.findOne({ where: { id: incomeId } });
-
-    const result = await Expenses.destroy(
-      {
-        where: { id: incomeId, userId: req.user.id },
-      },
-      { transaction: t }
-    );
-
+    const result = await Expense.findOneAndDelete({ _id: incomeId });
+    const amount = result.amount
+    
     const totalIncome = Number(req.user.totalIncome) - Number(amount);
+    req.user.editTotalIncome(totalIncome);
 
-    Users.update(
-      {
-        totalIncome: totalIncome,
-      },
-      {
-        where: { id: req.user.id },
-      },
-      {
-        transaction: t,
-      }
-    );
-    await t.commit();
     res.json(result);
   } catch (error) {
-    await t.rollback();
     console.error(error);
-    res.status(500).json({ error: "Error in delete expense " });
+    res.status(500).json({ error: "Error in delete income " });
   }
 };
