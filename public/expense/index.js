@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.getItem("lastEnteredDate");
   }
 
-  // setupForPremium();
+  setupForPremium();
   getIncomesPerDate(document.getElementById("date-pick").value);
   getExpensesPerDate(document.getElementById("date-pick").value);
 });

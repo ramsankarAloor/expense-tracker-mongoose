@@ -2,10 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const expenseController = require('../controllers/expense');
-// const incomeController = require('../controllers/income');
 const authMiddleware = require('../middlewares/auth');
 
-// router.get('/isPremium', authMiddleware.authenticate, expenseController.isUserPremium);
+router.get('/isPremium', authMiddleware.authenticate, expenseController.isUserPremium);
 
 router.post('/expenses', authMiddleware.authenticate, expenseController.getExpenses);
 

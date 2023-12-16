@@ -2,7 +2,7 @@ const Expense = require("../models/expense");
 const User = require("../models/user");
 
 exports.isUserPremium = async (req, res) => {
-  const user = await Users.findOne({ where: { id: req.user.id } });
+  const user = await User.findOne({ _id: req.user._id });
   res.json(user.isPremium);
 };
 
