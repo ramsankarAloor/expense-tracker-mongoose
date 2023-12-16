@@ -7,7 +7,7 @@ const authMiddleware = require('../middlewares/auth');
 
 // router.get('/isPremium', authMiddleware.authenticate, expenseController.isUserPremium);
 
-// router.post('/expenses', authMiddleware.authenticate, expenseController.getExpenses);
+router.post('/expenses', authMiddleware.authenticate, expenseController.getExpenses);
 
 router.post('/new-expense', authMiddleware.authenticate, expenseController.postNewExpense);
 

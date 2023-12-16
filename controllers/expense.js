@@ -7,22 +7,27 @@ exports.isUserPremium = async (req, res) => {
 };
 
 exports.getExpenses = async (req, res) => {
-  if(req.body.isIncome===false){
-    const expenses = await Expenses.findAll({
-      where: { userId: req.user.id, date: req.body.date, isIncome:false },
+  if (req.body.isIncome === false) {
+    const expenses = await Expense.find({
+      userId: req.user._id,
+      date: req.body.date,
+      isIncome: false,
     });
+
     res.json(expenses);
-  }else{
-    const incomes = await Expenses.findAll({
-      where: { userId: req.user.id, date: req.body.date, isIncome:true },
+  } else {
+    const incomes = await Expense.find({
+      userId: req.user.id,
+      date: req.body.date,
+      isIncome: true,
     });
+
     res.json(incomes);
   }
-  
 };
 
 exports.postNewExpense = async (req, res) => {
-  console.log("req user => ", req.user)
+  console.log("req user => ", req.user);
   try {
     if (!req.body.amount) {
       throw new Error("Amount field is mandatory..!");
@@ -33,8 +38,15 @@ exports.postNewExpense = async (req, res) => {
     const date = req.body.date;
     const isIncome = req.body.isIncome;
 
-    const expense = new Expense({amount, description, category, date, isIncome, userId: req.user._id})
-    
+    const expense = new Expense({
+      amount,
+      description,
+      category,
+      date,
+      isIncome,
+      userId: req.user._id,
+    });
+
     if (isIncome === false) {
       const totalExpense = Number(req.user.totalExpense) + Number(amount);
       req.user.addToTotalExpense(totalExpense);
@@ -43,9 +55,8 @@ exports.postNewExpense = async (req, res) => {
       req.user.addToTotalIncome(totalIncome);
     }
 
-    const newEntry = await expense.save(); 
+    const newEntry = await expense.save();
     res.status(201).json(newEntry);
-    
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -93,11 +104,14 @@ exports.deleteIncome = async (req, res) => {
   const t = await sequelize.transaction();
   try {
     const incomeId = req.params.id;
-    const {amount} = await Expenses.findOne({ where:{ id:incomeId } });
+    const { amount } = await Expenses.findOne({ where: { id: incomeId } });
 
-    const result = await Expenses.destroy({
-      where: { id: incomeId, userId: req.user.id },
-    }, {transaction:t});
+    const result = await Expenses.destroy(
+      {
+        where: { id: incomeId, userId: req.user.id },
+      },
+      { transaction: t }
+    );
 
     const totalIncome = Number(req.user.totalIncome) - Number(amount);
 
@@ -106,9 +120,10 @@ exports.deleteIncome = async (req, res) => {
         totalIncome: totalIncome,
       },
       {
-        where: { id: req.user.id }
-      },{
-        transaction : t
+        where: { id: req.user.id },
+      },
+      {
+        transaction: t,
       }
     );
     await t.commit();
@@ -116,6 +131,6 @@ exports.deleteIncome = async (req, res) => {
   } catch (error) {
     await t.rollback();
     console.error(error);
-    res.status(500).json({ error : "Error in delete expense "})
+    res.status(500).json({ error: "Error in delete expense " });
   }
 };

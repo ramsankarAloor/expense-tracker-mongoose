@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // setupForPremium();
-  // getIncomesPerDate(document.getElementById('date-pick').value);
-  // getExpensesPerDate(document.getElementById('date-pick').value);
+  getIncomesPerDate(document.getElementById('date-pick').value);
+  getExpensesPerDate(document.getElementById('date-pick').value);
 });
 
 function onSetDate(){
