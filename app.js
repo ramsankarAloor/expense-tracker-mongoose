@@ -8,18 +8,18 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const compression = require("compression");
 
-const Users = require("./models/user.js");
-const Expenses = require("./models/expenses");
-const Orders = require("./models/orders");
-const Forgotpassword = require("./models/forgotpassword");
-const Downloads = require("./models/downloads");
+// const Users = require("./models/user.js");
+// const Expenses = require("./models/expense");
+// const Orders = require("./models/orders");
+// const Forgotpassword = require("./models/forgotpassword");
+// const Downloads = require("./models/downloads");
 
 const userRoutes = require("./routes/user.js");
 const loginSignupRoutes = require("./routes/login-signup.js");
-const purchaseRoutes = require("./routes/purchase");
-const premiumRoutes = require("./routes/premium");
-const resetPasswordRoutes = require("./routes/reset-password.js");
-const reportRoutes = require("./routes/report");
+// const purchaseRoutes = require("./routes/purchase");
+// const premiumRoutes = require("./routes/premium");
+// const resetPasswordRoutes = require("./routes/reset-password.js");
+// const reportRoutes = require("./routes/report");
 
 app.use(compression()); // for compressing css and js files mainly, image files are not compressed.
 app.use(cors());
@@ -30,7 +30,7 @@ app.use("/check", (req, res) => {
   res.json({ msg: "hello guys..!" });
 });
 
-// app.use(userRoutes);
+app.use(userRoutes);
 app.use(loginSignupRoutes);
 // app.use("/purchase", purchaseRoutes);
 // app.use("/premium", premiumRoutes);

@@ -1,6 +1,5 @@
-const Expenses = require("../models/expenses");
-const sequelize = require("../util/database");
-const Users = require("../models/user");
+const Expense = require("../models/expense");
+const User = require("../models/user");
 
 exports.isUserPremium = async (req, res) => {
   const user = await Users.findOne({ where: { id: req.user.id } });
@@ -23,7 +22,7 @@ exports.getExpenses = async (req, res) => {
 };
 
 exports.postNewExpense = async (req, res) => {
-  const t = await sequelize.transaction();
+  console.log("req user => ", req.user)
   try {
     if (!req.body.amount) {
       throw new Error("Amount field is mandatory..!");
@@ -34,50 +33,20 @@ exports.postNewExpense = async (req, res) => {
     const date = req.body.date;
     const isIncome = req.body.isIncome;
 
-    const newEntry = await Expenses.create(
-      {
-        amount,
-        description,
-        category,
-        date,
-        isIncome,
-        userId: req.user.id,
-      },
-      { transaction: t }
-    );
-
+    const expense = new Expense({amount, description, category, date, isIncome, userId: req.user._id})
+    
     if (isIncome === false) {
       const totalExpense = Number(req.user.totalExpense) + Number(amount);
-      Users.update(
-        {
-          totalExpense: totalExpense,
-        },
-        {
-          where: { id: req.user.id },
-        },
-        {
-          transaction: t,
-        }
-      );
+      req.user.addToTotalExpense(totalExpense);
     } else {
       const totalIncome = Number(req.user.totalIncome) + Number(amount);
-      Users.update(
-        {
-          totalIncome: totalIncome,
-        },
-        {
-          where: { id: req.user.id },
-        },
-        {
-          transaction: t,
-        }
-      );
+      req.user.addToTotalIncome(totalIncome);
     }
 
-    await t.commit();
+    const newEntry = await expense.save(); 
     res.status(201).json(newEntry);
+    
   } catch (err) {
-    await t.rollback();
     console.error(err);
     res.status(500).json({
       error: "Error occured while creating an expense",

@@ -9,7 +9,7 @@ const authMiddleware = require('../middlewares/auth');
 
 // router.post('/expenses', authMiddleware.authenticate, expenseController.getExpenses);
 
-// router.post('/new-expense', authMiddleware.authenticate, expenseController.postNewExpense);
+router.post('/new-expense', authMiddleware.authenticate, expenseController.postNewExpense);
 
 // router.delete('/expenses/:id', authMiddleware.authenticate, expenseController.deleteExpense);
 

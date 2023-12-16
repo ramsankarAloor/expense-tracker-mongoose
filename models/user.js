@@ -9,6 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -16,9 +17,27 @@ const userSchema = new Schema({
   },
   isPremium: {
     type: Boolean,
+    default: false
+  },
+  totalExpense: {
+    type: Number,
     default: 0
   },
+  totalIncome: {
+    type: Number,
+    default: 0
+  }
 });
+
+userSchema.methods.addToTotalExpense = function(totalExpense){
+  this.totalExpense = totalExpense
+  return this.save();
+}
+
+userSchema.methods.addToTotalIncome = function(totalIncome){
+  this.totalIncome = totalIncome
+  return this.save();
+}
 
 module.exports = mongoose.model("User", userSchema);
 
