@@ -214,7 +214,7 @@ document.getElementById("rzp-button1").onclick = async function (event) {
   );
 
   console.log(response)
-  
+
   let options = {
     key: response.data.key_id,
     order_id: response.data.order.id,
@@ -251,10 +251,10 @@ const showReportButton = document.getElementById("show-report-btn");
 showReportButton.addEventListener("click", goToReport);
 
 function goToLeaderBoard() {
-  window.location.href = "../leaderboard/leaderboard.html";
+  window.location.href = "../leaderboard/index.html";
 }
 function goToReport() {
-  window.location.href = "../reportGeneration/report.html";
+  window.location.href = "../reportGeneration/index.html";
 }
 
 function switchToIncome() {
