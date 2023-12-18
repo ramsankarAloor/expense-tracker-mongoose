@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const User = require("../models/user")
 
 exports.purchasePremium = async (req, res) => {
-  // console.log("req user => ", req.user)
   try {
     let rzp = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -25,7 +24,6 @@ exports.purchasePremium = async (req, res) => {
         status: "PENDING",
       });
 
-      // await req.user.createOrder({ orderId: order.id, status: "PENDING" });
       return res.status(201).json({ order, key_id: rzp.key_id });
     });
   } catch (error) {
