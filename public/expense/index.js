@@ -212,6 +212,9 @@ document.getElementById("rzp-button1").onclick = async function (event) {
       },
     }
   );
+
+  console.log(response)
+  
   let options = {
     key: response.data.key_id,
     order_id: response.data.order.id,

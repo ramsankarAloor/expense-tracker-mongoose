@@ -16,7 +16,7 @@ const compression = require("compression");
 
 const userRoutes = require("./routes/user.js");
 const loginSignupRoutes = require("./routes/login-signup.js");
-// const purchaseRoutes = require("./routes/purchase");
+const purchaseRoutes = require("./routes/purchase");
 // const premiumRoutes = require("./routes/premium");
 // const resetPasswordRoutes = require("./routes/reset-password.js");
 // const reportRoutes = require("./routes/report");
@@ -32,7 +32,7 @@ app.use("/check", (req, res) => {
 
 app.use(userRoutes);
 app.use(loginSignupRoutes);
-// app.use("/purchase", purchaseRoutes);
+app.use("/purchase", purchaseRoutes);
 // app.use("/premium", premiumRoutes);
 // app.use("/password", resetPasswordRoutes);
 // app.use("/report", reportRoutes);
