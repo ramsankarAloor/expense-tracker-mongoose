@@ -1,4 +1,4 @@
-const apiBaseUrl = `http://13.48.1.93`;
+const apiBaseUrl = BASE_URL;
 
 document.addEventListener('DOMContentLoaded', function () {
   getDefaultMonth();
@@ -32,7 +32,7 @@ function displaySingleRowExpense(object) {
     div => (div.className = 'monthly-report-table-cell')
   );
 
-  dateDiv.textContent = object.date;
+  dateDiv.textContent = object.date.split('T')[0];
   descriptionDiv.textContent = object.description;
   categoryDiv.textContent = object.category;
   if (object.isIncome === false) {
@@ -62,7 +62,7 @@ async function downloadReport() {
   const {
     data: { fileUrl }
   } = await axios.post(
-    `${apiBaseUrl}:3000/report/download-monthly-list`,
+    `${apiBaseUrl}/report/download-monthly-list`,
     { selectedMonth },
     {
       headers: {
@@ -165,7 +165,7 @@ async function displayMonthlyReport(page) {
   const {
     data: { expensesForSelectedMonth, totalRecords }
   } = await axios.post(
-    `${apiBaseUrl}:3000/report/monthlyList?page=${page}&perPage=${perPage}`,
+    `${apiBaseUrl}/report/monthlyList?page=${page}&perPage=${perPage}`,
     { selectedMonth },
     {
       headers: {

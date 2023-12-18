@@ -1,6 +1,4 @@
-const { Op, literal } = require('sequelize');
-const Expenses = require('../models/expenses');
-const sequelize = require('../util/database');
+const Expense = require('../models/expense');
 const AWS = require('aws-sdk');
 const Downloads = require('../models/downloads');
 
@@ -12,31 +10,52 @@ exports.monthlyList = async (req, res) => {
     const startDate = new Date(`${year}-${month}-01`);
     const endDate = new Date(year, month, 0);
 
-    const totalRecords = await Expenses.count({
-      where: {
-        userId: req.user.id ,
-        date: {
-          [Op.between]: [startDate, endDate] // Filter by date range
-        }
+    const totalRecords = await Expense.countDocuments({
+      userId: req.user._id,
+      date: {
+        $gte: startDate,
+        $lte: endDate
       }
     });
+
+    // const totalRecords = await Expenses.count({
+    //   where: {
+    //     userId: req.user.id ,
+    //     date: {
+    //       [Op.between]: [startDate, endDate] // Filter by date range
+    //     }
+    //   }
+    // });
 
     //define pagination parameters
     const page = req.query.page || 1; //current page, default is 1
     const perPage = req.query.perPage || 10; //records per page
 
-    const expensesForSelectedMonth = await Expenses.findAll({
-      where: {
-        userId: req.user.id ,
-        date: {
-          [Op.between]: [startDate, endDate] // Filter by date range
-        }
-      },
-      order: [['date', 'ASC']],
-      limit: Number(perPage),
-      offset: (page - 1) * perPage
-    });
+    const expensesForSelectedMonth = await Expense.find({
+      userId: req.user._id,
+      date: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    })
+      .sort({ date: 1 }) // Sort by date in ascending order
+      .skip((page - 1) * perPage) // Skip records based on the current page
+      .limit(Number(perPage)); // Limit the number of records per page  
+
+    // const expensesForSelectedMonth = await Expenses.findAll({
+    //   where: {
+    //     userId: req.user.id ,
+    //     date: {
+    //       [Op.between]: [startDate, endDate] // Filter by date range
+    //     }
+    //   },
+    //   order: [['date', 'ASC']],
+    //   limit: Number(perPage),
+    //   offset: (page - 1) * perPage
+    // });
+
     res.json({ expensesForSelectedMonth, totalRecords });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'error while getting record' });

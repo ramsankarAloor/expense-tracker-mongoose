@@ -19,7 +19,7 @@ const loginSignupRoutes = require("./routes/login-signup.js");
 const purchaseRoutes = require("./routes/purchase");
 const premiumRoutes = require("./routes/premium");
 // const resetPasswordRoutes = require("./routes/reset-password.js");
-// const reportRoutes = require("./routes/report");
+const reportRoutes = require("./routes/report");
 
 app.use(compression()); // for compressing css and js files mainly, image files are not compressed.
 app.use(cors());
@@ -35,7 +35,7 @@ app.use(loginSignupRoutes);
 app.use("/purchase", purchaseRoutes);
 app.use("/premium", premiumRoutes);
 // app.use("/password", resetPasswordRoutes);
-// app.use("/report", reportRoutes);
+app.use("/report", reportRoutes);
 
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, `public/${req.url}`));
