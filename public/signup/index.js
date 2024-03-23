@@ -19,8 +19,8 @@ async function postSignup(event) {
   };
 
   try {
-  await axios.post(`${apiBaseUrl}/signup`, obj);
-  const { data: loginUser } = await axios.post(`${apiBaseUrl}/login`, {
+  await axios.post(`${apiBaseUrl}/auth/signup`, obj);
+  const { data: loginUser } = await axios.post(`${apiBaseUrl}/auth/login`, {
     email: email,
     password: password,
   });

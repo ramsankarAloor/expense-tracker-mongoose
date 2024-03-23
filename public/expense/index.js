@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function onSetDate() {
-  console.log(document.getElementById("date-pick").value);
   localStorage.setItem(
     "lastEnteredDate",
     document.getElementById("date-pick").value
@@ -30,7 +29,7 @@ function onSetDate() {
 async function getIncomesPerDate(date) {
   const token = localStorage.getItem("token");
   const { data: incomes } = await axios.post(
-    `${apiBaseUrl}/expenses`,
+    `${apiBaseUrl}/user/expenses`,
     { date: date, isIncome: true },
     {
       headers: {
@@ -54,7 +53,7 @@ async function getIncomesPerDate(date) {
 async function getExpensesPerDate(date) {
   const token = localStorage.getItem("token");
   const { data: expenses } = await axios.post(
-    `${apiBaseUrl}/expenses`,
+    `${apiBaseUrl}/user/expenses`,
     { date: date, isIncome: false },
     {
       headers: {
@@ -77,7 +76,7 @@ async function getExpensesPerDate(date) {
 
 async function setupForPremium() {
   const token = localStorage.getItem("token");
-  const { data: isUserPremium } = await axios.get(`${apiBaseUrl}/isPremium`, {
+  const { data: isUserPremium } = await axios.get(`${apiBaseUrl}/user/isPremium`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -119,7 +118,7 @@ function displayIncomeRecord(object) {
 
   async function deleteIncome() {
     const token = localStorage.getItem("token");
-    await axios.delete(`${apiBaseUrl}/incomes/${object._id}`, {
+    await axios.delete(`${apiBaseUrl}/user/incomes/${object._id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -157,7 +156,7 @@ function displayExpenseRecord(object) {
 
   async function deleteExpense() {
     const token = localStorage.getItem("token");
-    await axios.delete(`${apiBaseUrl}/expenses/${object._id}`, {
+    await axios.delete(`${apiBaseUrl}/user/expenses/${object._id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -175,12 +174,11 @@ async function postNewExpense() {
 
   const obj = { amount, description, category, date, isIncome: false };
 
-  const newExpense = await axios.post(`${apiBaseUrl}/new-expense`, obj, {
+   await axios.post(`${apiBaseUrl}/user/new-expense`, obj, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(newExpense);
   localStorage.setItem("lastEnteredDate", date);
   window.location.reload();
 }
@@ -194,7 +192,7 @@ async function postNewIncome() {
 
   const obj = { amount, description, category, date, isIncome: true };
 
-  await axios.post(`${apiBaseUrl}/new-expense`, obj, {
+  await axios.post(`${apiBaseUrl}/user/new-expense`, obj, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
